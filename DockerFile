@@ -1,0 +1,11 @@
+from node:18-alpine
+
+workdir /app
+# mention relative to the root folder and work dir of your container
+copy ./app/package*.json .
+
+run npm i
+
+copy ./app .
+
+cmd ["npm","start"]
