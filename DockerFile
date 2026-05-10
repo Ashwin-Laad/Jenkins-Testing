@@ -1,8 +1,8 @@
 from node:18-alpine
 
 workdir /app
-# mention relative to the root folder and work dir of your container
-copy ./app/package*.json .
+# mention relative to the root folder and work dir of your container //copy multiple files must be inside folder
+copy ./app/package*.json ./
 
 run npm i
 
