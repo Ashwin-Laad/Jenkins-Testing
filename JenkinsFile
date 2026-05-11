@@ -1,0 +1,40 @@
+pipeline{
+    
+    agent {label "my_jen_work"}
+    
+    stages{
+        
+        stage("clone"){
+            steps{
+                echo "cloning the repo"
+                git url: "https://github.com/Ashwin-Laad/Jenkins-Testing.git", branch: "main"
+            }
+        }
+        stage("build image"){
+            
+            steps{
+                echo "building image"
+                sh "docker build -t my_express_image -f DockerFile ."
+            }
+        }
+        stage("Push image to Docker Hub"){
+            steps{
+                withCredentials([usernamePassword(
+                    credentialsId:'Docker_hub_ID',usernameVariable:'MY_USER',passwordVariable:'MY_PASS')]){
+                        
+                        echo "pushing to docker hub"
+                        sh "docker login -u ${env.MY_USER} -p ${env.MY_PASS}"
+                        sh "docker image tag my_express_image ashwin12341/my_express_image "
+                        sh "docker push ashwin12341/my_express_image"
+                    
+                }
+            }
+        }
+        stage("Run the container"){
+            steps{
+                echo "Deploying the app"
+                sh "docker run -d -p 3000:3000 my_express_image"
+            }
+        }
+    }
+}
